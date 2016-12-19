@@ -1,8 +1,8 @@
 def coordenadas()
   node = []
-  File.open('espiral.node','r') do |f|
+  File.open('espiral.node','r') do |f| #en espiral.node estan las coordenadas de los puntos
     while linea = f.gets
-      node << linea.chop!
+      node << linea.chop! #chop elimina el ultimo caracter en este caso el salto de linea
     end
   end
 
@@ -17,7 +17,7 @@ end
 
 def triangulos()
   mesh = []
-  File.open('espiral.mesh','r') do |f|
+  File.open('espiral.mesh','r') do |f| # en espiral.mesh estan definidos los triangulos con sus puntos
     while linea = f.gets
       mesh << linea.chop!
     end
@@ -34,7 +34,7 @@ end
 def distancia(c,d)
     primero = d[1]-c[1]
     segundo = d[2]-c[2]
-    distancias = Math.sqrt((primero**2)+(segundo**2)).to_f
+    distancias = Math.sqrt((primero**2)+(segundo**2)).to_f #math.sqrt calcula raiz cuadrada
     return distancias
 end
 
@@ -101,4 +101,32 @@ for j in 1..largo
   b=distancia(largo2,largo3)
   c=distancia(largo1,largo3)
   lista << angulosTriangulos(a,b,c)
+end
+
+def triagulosArefinar(refinar) #aca se vera el numero del triangulo a refinar  
+  lista=[]
+  for i in 0..refinar.length-1
+    if refinar[i]==1
+      lista<<i+1   
+    end
+  end    
+  return lista
+end 
+
+def puntoMedio(a, b) #calcula el punto medio de una distancia
+    primero = (b[1]-a[1])/2
+    segundo = (b[2]-a[2])/2
+    puntoMed=[primero,segundo]
+  return puntoMed  
+end
+
+def calculateTriangle(mesh, node, triangulosArefinar) #refinacion del triangulo y calculo de los triangulos nuevos
+  nuevo= []
+  for i in 0..triangulosArefinar.length-1
+      nuevo<<mesh[triangulosArefinar[i]]
+      for j in 0..nuevo.length-1
+
+      end
+
+  end 
 end
