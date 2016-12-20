@@ -63,70 +63,76 @@ def cantidadDeTriangulos(mesh)
 end
 
 
-def angulo(a,b,c)
-  gama=Math.acos((c*c-a*a-b*b)/(-2*a*b))*180/Math::PI
-  alfa=Math.acos((a*a-b*b-c*c)/(-2*b*c))*180/Math::PI
-  beta=Math.acos((b*b-a*a-c*c)/(-2*a*c))*180/Math::PI
+def listaCantidadArefinar(mesh,node)
+  largo= cantidadDeTriangulos(mesh)
+  puts "largo: "+largo.to_s
+  lista =[]
+  segunda = []
+  for j in 1..largo
+    a=0
+    b=0
+    c=0
+    for i in 0..node.length-1
+      if mesh[j][0]==node[i][0]
+        largo1 = node[i]
+      end
 
-  refinar = 0
-  if (alfa <= 18 || beta <= 18 || gama <= 18)
-    refinar = 1
+      if mesh[j][1]==node[i][0]
+        largo2  = node[i]
+      end
+
+      if mesh[j][2]==node[i][0]
+        largo3 = node[i]
+      end
+    end
+    a= distancia(largo1,largo2)
+    b=distancia(largo2,largo3)
+    c=distancia(largo1,largo3)
+    lista << angulosTriangulos(a,b,c)
   end
-  puts (alfa).to_s+"---"+(beta).to_s+"  ---- "+(gama).to_s
-  return refinar
-
+  return lista
 end
 
-largo= cantidadDeTriangulos(mesh)
-lista =[]
-segunda = []
-for j in 1..largo
-  a=0
-  b=0
-  c=0
-  for i in 0..node.length-1
-    if mesh[j][0]==node[i][0]
-      largo1 = node[i]
-    end
-
-    if mesh[j][1]==node[i][0]
-      largo2  = node[i]
-    end
-
-    if mesh[j][2]==node[i][0]
-      largo3 = node[i]
-    end
-  end
-  a= distancia(largo1,largo2)
-  b=distancia(largo2,largo3)
-  c=distancia(largo1,largo3)
-  lista << angulosTriangulos(a,b,c)
-end
-
-def triagulosArefinar(refinar) #aca se vera el numero del triangulo a refinar  
+def triangulosArefinar(refinar) #indice del triangulo en el vector
   lista=[]
   for i in 0..refinar.length-1
     if refinar[i]==1
-      lista<<i+1   
+      lista<<i+1
     end
-  end    
+  end
   return lista
-end 
+end
 
-def puntoMedio(a, b) #calcula el punto medio de una distancia
-    primero = (b[1]-a[1])/2
-    segundo = (b[2]-a[2])/2
-    puntoMed=[primero,segundo]
-  return puntoMed  
+def puntoMedio(a, b,lista,mesh) #calcula el punto medio de una distancia
+    primero = (b[1]+a[1])/2
+    segundo = (b[2]+a[2])/2
+    numero = lista.length+1
+    puntoMed=[numero,primero,segundo]
+    mesh[0][0]= numero
+    lista<< puntoMed
+  return puntoMed
 end
 
 def calculateTriangle(mesh, node, triangulosArefinar) #refinacion del triangulo y calculo de los triangulos nuevos
-  nuevo= []
+  nuevo =[]
   for i in 0..triangulosArefinar.length-1
-      nuevo<<mesh[triangulosArefinar[i]]
-      for j in 0..nuevo.length-1
+    nuevo<<mesh[triangulosArefinar[i]]
+  end
+  return nuevo
+end
 
-      end
 
-  end 
+def trianguloMayor(triangulo,node,indice)
+    for j in 0..node.length-1
+        if triangulo[0] == node[j][0]
+          a = node[j]
+        end
+        if triangulo[1] == node[j][0]
+          b = node[j]
+        end
+        if triangulo[2] == node[j][0]
+          c =node[j]
+        end
+  end
+  puts a,b,c
 end
