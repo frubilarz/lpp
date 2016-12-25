@@ -1,3 +1,6 @@
+require 'geometry'
+require_relative './triangulo'
+
 def coordenadas()
   node = []
   File.open('espiral.node','r') do |f| #en espiral.node estan las coordenadas de los puntos
@@ -31,64 +34,66 @@ def triangulos()
   return mesh
 end
 
-def distancia(c,d)
-    primero = d[1]-c[1]
-    segundo = d[2]-c[2]
-    distancias = Math.sqrt((primero**2)+(segundo**2)).to_f #math.sqrt calcula raiz cuadrada
-    return distancias
-end
-
-
-
-def angulosTriangulos(a,b,c)
-  angulo = 180/Math::PI
-  bCuadrado= b*b
-  cCuadrado = c*c
-  aCuadrado = a*a
-  alfa = Math.acos((bCuadrado+cCuadrado- aCuadrado)/(2*b*c))* angulo
-  beta = Math.acos((aCuadrado+cCuadrado- bCuadrado )/(2*a*c))*angulo
-  gama = Math.acos((aCuadrado+bCuadrado-cCuadrado)/(2*a*b))*angulo
-  refinar = 0
-  if (alfa <= 18 || beta <= 18 || gama <= 18)
-    refinar = 1
-  end
-  puts (alfa).to_s+"---"+(beta).to_s+"  ---- "+(gama).to_s
-  return refinar
-end
-
 
 def cantidadDeTriangulos(mesh)
   largo = mesh[0][0]
   return largo
 end
 
+def angulosTriangulos(a,b,c)
+  triangulo = Triangulos.new(a,b,c)
+  refinar = 0
+  if(triangulo.alfa < 18 || triangulo.beta < 18 || triangulo.gama < 18)
+    refinar =1
+  end
+  return refinar
+end
+
+def combinaciones(mesh)
+  largo = mesh.length
+  combinacion = []
+  if largo ==1
+    combinacion << mesh.combination(2).to_a
+  end
+  if largo > 1
+    for i in 1..mesh.length-1
+      combinacion << mesh[i].combination(2).to_a
+    end
+  end
+  return combinacion
+end
+
 
 def listaCantidadArefinar(mesh,node)
   largo= cantidadDeTriangulos(mesh)
-  puts "largo: "+largo.to_s
   lista =[]
-  segunda = []
   for j in 1..largo
     a=0
     b=0
     c=0
     for i in 0..node.length-1
       if mesh[j][0]==node[i][0]
-        largo1 = node[i]
+        largo1 =[]
+        largo1 << node[i][1]
+        largo1 << node[i][2]
       end
 
       if mesh[j][1]==node[i][0]
-        largo2  = node[i]
+        largo2 =[]
+        largo2 << node[i][1]
+        largo2 << node[i][2]
       end
 
       if mesh[j][2]==node[i][0]
-        largo3 = node[i]
+        largo3 =[]
+        largo3 << node[i][1]
+        largo3 << node[i][2]
       end
     end
-    a= distancia(largo1,largo2)
-    b=distancia(largo2,largo3)
-    c=distancia(largo1,largo3)
-    lista << angulosTriangulos(a,b,c)
+    a= Geometry::Edge.new(largo1,largo2)
+    b=Geometry::Edge.new(largo2,largo3)
+    c=Geometry::Edge.new(largo1,largo3)
+    lista << angulosTriangulos(a.length,b.length,c.length)
   end
   return lista
 end
@@ -103,15 +108,25 @@ def triangulosArefinar(refinar) #indice del triangulo en el vector
   return lista
 end
 
-def puntoMedio(a, b,lista,mesh) #calcula el punto medio de una distancia
-    primero = (b[1]+a[1])/2
-    segundo = (b[2]+a[2])/2
-    numero = lista.length+1
-    puntoMed=[numero,primero,segundo]
-    mesh[0][0]= numero
-    lista<< puntoMed
+def toEdge(nodoPrimero,nodoSegundo) # transforma los nodos en objetos edges para poder calcular sus disntancias
+  largo1 =[]
+  largo2 =[]
+  largo1 << nodoPrimero[1] << nodoPrimero[2]
+  largo2 << nodoSegundo[1] << nodoSegundo[2]
+  geometria = Geometry::Edge.new(largo1,largo2)
+  return geometria
+end
+
+def puntoMedio(lado,lista,mesh) #calcula el punto medio de una distancia
+  x = (lado.first.x + a.first.x)/2
+  y= (lado.last.y + a.last.y)/2
+  numero = lista.length+1
+  puntoMed=[numero,x,y]
+  mesh[0][0]= numero
+  lista<< puntoMed
   return puntoMed
 end
+
 
 def calculateTriangle(mesh, node, triangulosArefinar) #refinacion del triangulo y calculo de los triangulos nuevos
   nuevo =[]
@@ -121,18 +136,63 @@ def calculateTriangle(mesh, node, triangulosArefinar) #refinacion del triangulo 
   return nuevo
 end
 
-
-def trianguloMayor(triangulo,node,indice)
-    for j in 0..node.length-1
-        if triangulo[0] == node[j][0]
-          a = node[j]
-        end
-        if triangulo[1] == node[j][0]
-          b = node[j]
-        end
-        if triangulo[2] == node[j][0]
-          c =node[j]
-        end
+def verticeMasLargo(a,b,c)
+  if a > b && a > c
+    lado = 0
   end
-  puts a,b,c
+  if b >a && b > c
+    lado = 1
+  end
+  if c > a && c > b
+    lado = 2
+  end
+  return lado
+end
+
+
+def nuevosTriangulos(listaCombinacion)
+
+  for i in 0..listaCombinacion.length-1
+    for j in 0..listaCombinacion[i].length-1
+
+    end
+  end
+
+end
+
+
+
+def buscarNodo(matriz,node)
+  uno = matriz[0]
+  dos = matriz[1]
+  tres = matriz[2]
+  for i in 0..node.length-1
+    if(uno[0]==node[i][0])
+      primerlargo = node[i]
+    end
+    if(uno[1]==node[i][0])
+      segundolargo = node[i]
+    end
+
+    if(dos[0]==node[i][0])
+      tercerolargo = node[i]
+    end
+    if(dos[1]==node[i][0])
+      cuartolargo = node[i]
+    end
+
+    if(tres[0]==node[i][0])
+      quintolargo = node[i]
+    end
+    if(tres[1]==node[i][0])
+      sextolargo = node[i]
+    end
+  end
+  a =  toEdge(primerlargo,segundolargo)
+  b =  toEdge(tercerolargo,cuartolargo)
+  c =  toEdge(quintolargo,sextolargo)
+  s = verticeMasLargo(a.length,b.length,c.length)
+
+  puts s.to_s
+
 end
