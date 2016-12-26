@@ -44,7 +44,7 @@ def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
   refinar = 0
   if(triangulo.alfa < 18 || triangulo.beta < 18 || triangulo.gama < 18)
-    refinar =1
+    refinar = 1
   end
   return refinar
 end
@@ -56,7 +56,7 @@ def combinaciones(mesh)
     combinacion << mesh.combination(2).to_a
   end
   if largo > 1
-    for i in 1..mesh.length-1
+    for i in 0..mesh.length-1
       combinacion << mesh[i].combination(2).to_a
     end
   end
@@ -117,18 +117,29 @@ def toEdge(nodoPrimero,nodoSegundo) # transforma los nodos en objetos edges para
   return geometria
 end
 
-def puntoMedio(lado,lista,mesh) #calcula el punto medio de una distancia
-  x = (lado.first.x + a.first.x)/2
-  y= (lado.last.y + a.last.y)/2
-  numero = lista.length+1
-  puntoMed=[numero,x,y]
-  mesh[0][0]= numero
-  lista<< puntoMed
+def puntoMedio(lado,lista) #calcula el punto medio de una distancia
+  x = ((lado.first.x + lado.last.x)/2).to_f
+  y= ((lado.first.y + lado.last.y)/2).to_f
+  auxiliar = 1
+  for i in 0..lista.length-1
+    if(lista[i][1] ==x && lista[i][2] == y )
+      auxiliar = 0
+      indice = i
+    end
+  end
+  if auxiliar == 1
+    numero  = lista.length+1
+    puntoMed = [numero,x,y]
+    lista<< puntoMed
+  else
+    puntoMed = [lista[indice][0],x,y]  
+  end
   return puntoMed
 end
 
 
-def calculateTriangle(mesh, node, triangulosArefinar) #refinacion del triangulo y calculo de los triangulos nuevos
+def calculateTriangle(mesh, node, triangulosArefinar) 
+  #refinacion del triangulo y calculo de los triangulos nuevos
   nuevo =[]
   for i in 0..triangulosArefinar.length-1
     nuevo<<mesh[triangulosArefinar[i]]
@@ -150,15 +161,6 @@ def verticeMasLargo(a,b,c)
 end
 
 
-def nuevosTriangulos(listaCombinacion)
-
-  for i in 0..listaCombinacion.length-1
-    for j in 0..listaCombinacion[i].length-1
-
-    end
-  end
-
-end
 
 
 
@@ -192,7 +194,62 @@ def buscarNodo(matriz,node)
   b =  toEdge(tercerolargo,cuartolargo)
   c =  toEdge(quintolargo,sextolargo)
   s = verticeMasLargo(a.length,b.length,c.length)
+  return s
+end
 
-  puts s.to_s
+def buscarPunto(node,arreglo) # busca los nodos 
+  nodo = []  
+  for i in 0..node.length-1
+    for j in 0..arreglo.length-1
+      if(arreglo[j] == node[i][0]) # compara el numero del nodo para retornar su nodo completo
+        nodo << node[i]
+      end
+    end
+  end
+  return nodo
+end
 
+def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
+
+  combinacion = combinaciones(listaDeTriangulosArefinar)
+  for i in 0..combinacion.length-1
+    triangulo = combinacion[i]
+    lado = buscarNodo(triangulo,node)
+    punto = buscarPunto(node,triangulo[lado.to_i])
+    edge = toEdge(punto[0],punto[1])
+    puntoMedio = puntoMedio(edge,node)
+    nuevoTriangulo = []
+    for k in 0..triangulo.length-1
+      if(k!=lado)
+        triangulo[k]<<puntoMedio[0]
+        nuevoTriangulo << triangulo[k]
+      end
+    end
+    
+    for j in 0..mesh.length-1
+      if(mesh[j]==listaDeTriangulosArefinar[i])
+        puts mesh[j]
+        mesh[j]= nuevoTriangulo[0]
+      end
+    end
+    mesh<< nuevoTriangulo[1]
+
+    
+    
+  end
+  mesh[0][0]= mesh.length
+end
+  
+  
+def iguales(triangulo,lado)
+  combinacion = combinaciones(mesh)
+  iguales = []
+  for i in 0..combinacion.length-1
+    for j in 0..combinacion[i].length-1
+      if triangulo[lado] == combinacion[i][j] || triangulo[lado].reverse == combinacion[i][j]
+        iguales << mesh[i]
+      end 
+    end 
+  end
+  return iguales
 end
