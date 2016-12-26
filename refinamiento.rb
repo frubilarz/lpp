@@ -213,6 +213,7 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
 
   combinacion = combinaciones(listaDeTriangulosArefinar)
   for i in 0..combinacion.length-1
+    combinacionAux = combinaciones(listaDeTriangulosArefinar)
     triangulo = combinacion[i]
     lado = buscarNodo(triangulo,node)
     punto = buscarPunto(node,triangulo[lado.to_i])
@@ -225,7 +226,6 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
         nuevoTriangulo << triangulo[k]
       end
     end
-    
     for j in 0..mesh.length-1
       if(mesh[j]==listaDeTriangulosArefinar[i])
         puts mesh[j]
@@ -233,23 +233,34 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
       end
     end
     mesh<< nuevoTriangulo[1]
-
     
-    
+    igual = iguales(mesh,combinacionAux[i],lado)
+    if igual != []
+      combinacionIgual = igual.combination(2).to_a
+      for p in 0..combinacionIgual.length
+        if(combinacionIgual[p]!=triangulo[lado])
+          
+        end
+      end
+    end
   end
   mesh[0][0]= mesh.length
 end
   
   
-def iguales(triangulo,lado)
+def iguales(mesh,triangulo,lado)
   combinacion = combinaciones(mesh)
   iguales = []
   for i in 0..combinacion.length-1
     for j in 0..combinacion[i].length-1
       if triangulo[lado] == combinacion[i][j] || triangulo[lado].reverse == combinacion[i][j]
-        iguales << mesh[i]
+        iguales = mesh[i]
       end 
     end 
   end
   return iguales
 end
+
+
+
+
