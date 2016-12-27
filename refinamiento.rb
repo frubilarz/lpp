@@ -12,7 +12,11 @@ def coordenadas()
   for i in 0..node.length-1
     node[i]= node[i].split(" ")
     for j in 0..node[i].length-1
-      node[i][j]= node[i][j].to_f
+      if j == 0
+        node[i][j]= node[i][j].to_i
+      else
+        node[i][j]= node[i][j].to_f
+      end
     end
   end
   return node
@@ -50,14 +54,16 @@ def angulosTriangulos(a,b,c)
 end
 
 def combinaciones(mesh)
-  largo = mesh.length
   combinacion = []
-  if largo ==1
-    combinacion << mesh.combination(2).to_a
-  end
-  if largo > 1
-    for i in 0..mesh.length-1
-      combinacion << mesh[i].combination(2).to_a
+  dimension = get_dimension mesh
+  if dimension == 1 && mesh.length == 3
+    combinacion = mesh.combination(2).to_a
+  else
+    largo = mesh.length
+    if largo > 1
+      for i in 0..mesh.length-1
+        combinacion << mesh[i].combination(2).to_a
+      end
     end
   end
   return combinacion
@@ -212,9 +218,9 @@ end
 def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
 
   combinacion = combinaciones(listaDeTriangulosArefinar)
-  for i in 0..combinacion.length-1
-    combinacionAux = combinaciones(listaDeTriangulosArefinar)
-    triangulo = combinacion[i]
+  dimension = get_dimension combinacion
+  if dimension ==2
+    triangulo = combinacion
     lado = buscarNodo(triangulo,node)
     punto = buscarPunto(node,triangulo[lado.to_i])
     edge = toEdge(punto[0],punto[1])
@@ -227,26 +233,51 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
       end
     end
     for j in 0..mesh.length-1
-      if(mesh[j]==listaDeTriangulosArefinar[i])
-        puts mesh[j]
+      if(mesh[j]==listaDeTriangulosArefinar)
         mesh[j]= nuevoTriangulo[0]
       end
     end
     mesh<< nuevoTriangulo[1]
     
-    igual = iguales(mesh,combinacionAux[i],lado)
+    igual = iguales(mesh,triangulo,lado)
+ 
+    puts igual.to_s
     if igual != []
-      combinacionIgual = igual.combination(2).to_a
-      for p in 0..combinacionIgual.length
-        if(combinacionIgual[p]!=triangulo[lado])
-          
+      # crearTriangulo(mesh,node,igual)
+    end
+    mesh[0][0]= mesh.length-1
+  end
+  if dimension!=2
+    for i in 0..combinacion.length-1
+      triangulo = combinacion[i]
+      lado = buscarNodo(triangulo,node)
+      punto = buscarPunto(node,triangulo[lado.to_i])
+      edge = toEdge(punto[0],punto[1])
+      puntoMedio = puntoMedio(edge,node)
+      nuevoTriangulo = []
+      for k in 0..triangulo.length-1
+        if(k!=lado)
+          triangulo[k]<<puntoMedio[0]
+          nuevoTriangulo << triangulo[k]
         end
       end
+      for j in 0..mesh.length-1
+        if(mesh[j]==listaDeTriangulosArefinar[i])
+          mesh[j]= nuevoTriangulo[0]
+        end
+      end
+      mesh<< nuevoTriangulo[1]
+    
+      igual = iguales(mesh,triangulo,lado)
+ 
+      puts igual.to_s
+      if igual != []
+        crearTriangulo(mesh,node,igual)
+      end
     end
+    mesh[0][0]= mesh.length-1
   end
-  mesh[0][0]= mesh.length
 end
-  
   
 def iguales(mesh,triangulo,lado)
   combinacion = combinaciones(mesh)
@@ -261,6 +292,32 @@ def iguales(mesh,triangulo,lado)
   return iguales
 end
 
+def get_dimension a  #calcula la dimension del array
+  return 0 if a.class != Array
+  result = 1
+  a.each do |sub_a|
+    if sub_a.class == Array
+      dim = get_dimension(sub_a)
+      result = dim + 1 if dim + 1 > result
+    end
+  end
+  return result
+end
 
 
 
+node = coordenadas()
+mesh = triangulos()
+candidata = listaCantidadArefinar(mesh,node)
+triangulos = triangulosArefinar(candidata)
+vertices = calculateTriangle(mesh,node,triangulos)
+crearTriangulo(mesh,node,vertices)
+
+
+loop do 
+  candidata = listaCantidadArefinar(mesh,node)
+  triangulos = triangulosArefinar(candidata)
+  vertices = calculateTriangle(mesh,node,triangulos)
+  crearTriangulo(mesh,node,vertices)
+  break if candidata.reduce(:+)==0
+end
