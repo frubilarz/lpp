@@ -313,7 +313,7 @@ triangulos = triangulosArefinar(candidata)
 vertices = calculateTriangle(mesh,node,triangulos)
 crearTriangulo(mesh,node,vertices)
 
-
+inicio = Time.now
 loop do 
   candidata = listaCantidadArefinar(mesh,node)
   triangulos = triangulosArefinar(candidata)
@@ -321,6 +321,8 @@ loop do
   crearTriangulo(mesh,node,vertices)
   break if candidata.reduce(:+)==0
 end
-
+termino = Time.now
 puts mesh.last.to_s
 puts node.last.to_s
+
+puts "tiempo" + (termino-inicio).to_s
