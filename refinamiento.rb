@@ -47,8 +47,10 @@ end
 def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
   refinar = 0
-  if(triangulo.alfa < 18 || triangulo.beta < 18 || triangulo.gama < 18)
-    refinar = 1
+  if(triangulo.alfa <= 18 || triangulo.beta <= 18 || triangulo.gama <= 18) 
+    if (triangulo.alfa > 0 || triangulo.beta > 0 || triangulo.gama > 0 )
+      refinar = 1
+    end
   end
   return refinar
 end
@@ -69,6 +71,22 @@ def combinaciones(mesh)
   return combinacion
 end
 
+
+def listaCantidadArefinar()
+  mesh = []
+  File.open('ref','r') do |f| # en espiral.mesh estan definidos los triangulos con sus puntos
+    while linea = f.gets
+      mesh << linea.chop!
+    end
+  end
+  for i in 0..mesh.length-1
+    mesh[i]= mesh[i].split(" ")
+    for j in 0..mesh[i].length-1
+      mesh[i][j]= mesh[i][j].to_i
+    end
+  end
+  return mesh
+end
 
 def listaCantidadArefinar(mesh,node)
   largo= cantidadDeTriangulos(mesh)
@@ -241,9 +259,9 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
     
     igual = iguales(mesh,triangulo,lado)
  
-    puts igual.to_s
+    
     if igual != []
-      # crearTriangulo(mesh,node,igual)
+      crearTriangulo(mesh,node,igual)
     end
     mesh[0][0]= mesh.length-1
   end
@@ -270,7 +288,7 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
     
       igual = iguales(mesh,triangulo,lado)
  
-      puts igual.to_s
+      
       if igual != []
         crearTriangulo(mesh,node,igual)
       end
@@ -305,24 +323,35 @@ def get_dimension a  #calcula la dimension del array
 end
 
 
+def escribirPoly(node,mesh,nombre)
+  combinacion = combinaciones(mesh)
+  File.open(nombre,'w') do |file|
+    file.puts node.length.to_s+" 2 0 0"
+    for i in 0..node.length-1
+      n = node[i]
+      q=' '
+      file.puts n[0].to_s+q+n[1].to_s+q+ n[2].to_s
+    end
+    file.puts (3*(combinacion.length-1)).to_s+" 0"
+    aux = 1
+    for i in 1..combinacion.length-1
+      c = combinacion[i]
+      for j in 0..c.length-1
+          file.puts aux.to_s+q+c[j][0].to_s+q+c[j][1].to_s+q+c[j][2].to_s  
+          aux =aux+1 
+      end
+    end
+    file.puts "0"
+  end
+end
 
 node = coordenadas()
 mesh = triangulos()
+escribirPoly(node,mesh,"original.poly")
 candidata = listaCantidadArefinar(mesh,node)
 triangulos = triangulosArefinar(candidata)
 vertices = calculateTriangle(mesh,node,triangulos)
 crearTriangulo(mesh,node,vertices)
-
-inicio = Time.now
-loop do 
-  candidata = listaCantidadArefinar(mesh,node)
-  triangulos = triangulosArefinar(candidata)
-  vertices = calculateTriangle(mesh,node,triangulos)
-  crearTriangulo(mesh,node,vertices)
-  break if candidata.reduce(:+)==0
-end
-termino = Time.now
-puts mesh.last.to_s
-puts node.last.to_s
-
-puts "tiempo" + (termino-inicio).to_s
+escribirPoly(node,mesh,"final.poly")
+puts mesh.first
+puts (node.last)[0]
