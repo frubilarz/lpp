@@ -321,3 +321,6 @@ loop do
   crearTriangulo(mesh,node,vertices)
   break if candidata.reduce(:+)==0
 end
+
+puts mesh.last.to_s
+puts node.last.to_s
