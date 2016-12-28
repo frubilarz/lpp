@@ -353,6 +353,12 @@ inicial = Time.now
 triangulos = triangulosArefinar(candidata)
 vertices = calculateTriangle(mesh,node,triangulos)
 crearTriangulo(mesh,node,vertices)
+final=Time.now
 escribirPoly(node,mesh,"final.poly")
-puts mesh.first
-puts (node.last)[0]
+meshoriginal=triangulos()
+triangulosGenerados=(meshoriginal[0][0])-(mesh[0][0])
+tiempo=final-inicial
+puts "tiempo inicial"+inicial.to_s
+puts "tiempo final"+final.to_s
+puts "tiempo de ejecucion"+tiempo.to_s
+puts "numero de triangulos generados"+triangulosGenerados.to_s
