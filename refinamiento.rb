@@ -349,6 +349,7 @@ node = coordenadas()
 mesh = triangulos()
 escribirPoly(node,mesh,"original.poly")
 candidata = listaCantidadArefinar(mesh,node)
+inicial = Time.now
 triangulos = triangulosArefinar(candidata)
 vertices = calculateTriangle(mesh,node,triangulos)
 crearTriangulo(mesh,node,vertices)
