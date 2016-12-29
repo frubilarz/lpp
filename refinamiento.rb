@@ -37,6 +37,25 @@ def triangulos()
   end
   return mesh
 end
+def candidatos()
+  candidato =[]
+  File.open('candidato.ref', 'r') do |f|
+    while linea = f.gets
+      candidato << linea.chop!
+    end
+  end
+  for i in 0..candidato.length-1
+    candidato[i]= candidato[i].split(" ")
+    for j in 0..candidato[i].length-1
+      candidato[i][j]= candidato[i][j].to_i
+    end
+  end
+  for i in 0..candidato.length-1
+    candidato[i]= candidato[i][1]
+  end
+  return candidato
+end
+
 
 
 def cantidadDeTriangulos(mesh)
@@ -348,10 +367,11 @@ end
 node = coordenadas()
 mesh = triangulos()
 escribirPoly(node,mesh,"original.poly")
-candidata = listaCantidadArefinar(mesh,node)
-inicial = Time.now
+#candidata = listaCantidadArefinar(mesh,node)
+candidata = candidatos()
 triangulos = triangulosArefinar(candidata)
 vertices = calculateTriangle(mesh,node,triangulos)
+inicial = Time.now
 crearTriangulo(mesh,node,vertices)
 final=Time.now
 escribirPoly(node,mesh,"final.poly")
