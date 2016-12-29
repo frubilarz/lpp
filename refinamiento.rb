@@ -20,7 +20,7 @@ def coordenadas()
     end
   end
   return node
-end
+end #complejidad O(n+n^2) ya busca los caracteres en un linea y luego asigna las coordenadas de los triangulos a la matriz nodo
 
 def triangulos()
   mesh = []
@@ -36,7 +36,8 @@ def triangulos()
     end
   end
   return mesh
-end
+end #complejidad O(n+n^2) ya busca los caracteres en un linea y luego asigna las coordenadas de los triangulos a la matriz nodo
+
 def candidatos()
   candidato =[]
   File.open('candidato.ref', 'r') do |f|
@@ -54,14 +55,13 @@ def candidatos()
     candidato[i]= candidato[i][1]
   end
   return candidato
-end
-
+end #complejidad O(2n+n^2) ya busca los caracteres en un linea y luego asigna las coordenadas de los triangulos a la matriz nodo
 
 
 def cantidadDeTriangulos(mesh)
   largo = mesh[0][0]
   return largo
-end
+end #complejidad O(1)
 
 def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
@@ -72,7 +72,7 @@ def angulosTriangulos(a,b,c)
     end
   end
   return refinar
-end
+end #complejidad con clase??? no lo se nando
 
 def combinaciones(mesh)
   combinacion = []
@@ -88,7 +88,7 @@ def combinaciones(mesh)
     end
   end
   return combinacion
-end
+end # complejidad O(2n)
 
 
 def listaCantidadArefinar()
@@ -105,7 +105,7 @@ def listaCantidadArefinar()
     end
   end
   return mesh
-end
+end #complejidad O(n^2+n)
 
 def listaCantidadArefinar(mesh,node)
   largo= cantidadDeTriangulos(mesh)
@@ -139,7 +139,7 @@ def listaCantidadArefinar(mesh,node)
     lista << angulosTriangulos(a.length,b.length,c.length)
   end
   return lista
-end
+end #complejidad O((n+1)^2 + la complejidad con clase??? no lo se nando)
 
 def triangulosArefinar(refinar) #indice del triangulo en el vector
   lista=[]
@@ -149,7 +149,7 @@ def triangulosArefinar(refinar) #indice del triangulo en el vector
     end
   end
   return lista
-end
+end #complejidad O(n)
 
 def toEdge(nodoPrimero,nodoSegundo) # transforma los nodos en objetos edges para poder calcular sus disntancias
   largo1 =[]
@@ -158,7 +158,7 @@ def toEdge(nodoPrimero,nodoSegundo) # transforma los nodos en objetos edges para
   largo2 << nodoSegundo[1] << nodoSegundo[2]
   geometria = Geometry::Edge.new(largo1,largo2)
   return geometria
-end
+end #complejidad O(1)
 
 def puntoMedio(lado,lista) #calcula el punto medio de una distancia
   x = ((lado.first.x + lado.last.x)/2).to_f
@@ -178,7 +178,7 @@ def puntoMedio(lado,lista) #calcula el punto medio de una distancia
     puntoMed = [lista[indice][0],x,y]  
   end
   return puntoMed
-end
+end #complejidad O(n+1)
 
 
 def calculateTriangle(mesh, node, triangulosArefinar) 
@@ -188,7 +188,7 @@ def calculateTriangle(mesh, node, triangulosArefinar)
     nuevo<<mesh[triangulosArefinar[i]]
   end
   return nuevo
-end
+end #complejidad O(n^2) porque llama a triangulo a refinar el que tiene complejidad n
 
 def verticeMasLargo(a,b,c)
   if a > b && a > c
@@ -201,7 +201,7 @@ def verticeMasLargo(a,b,c)
     lado = 2
   end
   return lado
-end
+end # complejidad O(1)
 
 
 
@@ -238,7 +238,7 @@ def buscarNodo(matriz,node)
   c =  toEdge(quintolargo,sextolargo)
   s = verticeMasLargo(a.length,b.length,c.length)
   return s
-end
+end #complejidad O(n+1)
 
 def buscarPunto(node,arreglo) # busca los nodos 
   nodo = []  
@@ -250,7 +250,7 @@ def buscarPunto(node,arreglo) # busca los nodos
     end
   end
   return nodo
-end
+end #complejidad O(n^2)
 
 def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
 
@@ -314,7 +314,7 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
     end
     mesh[0][0]= mesh.length-1
   end
-end
+end #complejidad O(2n+n((n+1)+(n^2)+(1)+(n+1)+n+n)) --> O(2n+n(n^2+4n+3))--> O(2n+n^3+4n^2+3n)->O(n^3+4n^2+5)
   
 def iguales(mesh,triangulo,lado)
   combinacion = combinaciones(mesh)
@@ -327,7 +327,7 @@ def iguales(mesh,triangulo,lado)
     end 
   end
   return iguales
-end
+end #complejidad O(2n+n^2)
 
 def get_dimension a  #calcula la dimension del array
   return 0 if a.class != Array
@@ -339,7 +339,7 @@ def get_dimension a  #calcula la dimension del array
     end
   end
   return result
-end
+end #complejidad O(n)
 
 
 def escribirPoly(node,mesh,nombre)
@@ -362,9 +362,9 @@ def escribirPoly(node,mesh,nombre)
     end
     file.puts "0"
   end
-end
+end #complejidad O(2n+n+n^2)+>O(3n+n^2)
 
-node = coordenadas()
+node = coordenadas() 
 mesh = triangulos()
 escribirPoly(node,mesh,"original.poly")
 #candidata = listaCantidadArefinar(mesh,node)
