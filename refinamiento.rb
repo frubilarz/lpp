@@ -66,7 +66,7 @@ end #complejidad O(1)
 def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
   refinar = 0
-  if(triangulo.alfa <= 39 || triangulo.beta <= 39 || triangulo.gama <= 39) 
+  if(triangulo.alfa <= 41.5 || triangulo.beta <= 41.5 || triangulo.gama <= 41.5) 
     if (triangulo.alfa > 0 || triangulo.beta > 0 || triangulo.gama > 0 )
       refinar = 1
     end
