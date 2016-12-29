@@ -139,7 +139,7 @@ def listaCantidadArefinar(mesh,node)
     lista << angulosTriangulos(a.length,b.length,c.length)
   end
   return lista
-end #complejidad O((n+1)^2 + la complejidad con clase??? no lo se nando)
+end #complejidad O((n+1)^2 + 1)
 
 def triangulosArefinar(refinar) #indice del triangulo en el vector
   lista=[]
@@ -188,7 +188,7 @@ def calculateTriangle(mesh, node, triangulosArefinar)
     nuevo<<mesh[triangulosArefinar[i]]
   end
   return nuevo
-end #complejidad O(n^2) porque llama a triangulo a refinar el que tiene complejidad n
+end #complejidad O(n) 
 
 def verticeMasLargo(a,b,c)
   if a > b && a > c
@@ -362,23 +362,28 @@ def escribirPoly(node,mesh,nombre)
     end
     file.puts "0"
   end
-end #complejidad O(2n+n+n^2)+>O(3n+n^2)
+end #complejidad O(2n+n+n^2)-->O(3n+n^2)
 
-node = coordenadas() 
-mesh = triangulos()
-escribirPoly(node,mesh,"original.poly")
+node = coordenadas() #O(n+n^2+1) 
+mesh = triangulos() # O(n+n^2+1) 
+escribirPoly(node,mesh,"original.poly") # O(3n+n^2) 
 #candidata = listaCantidadArefinar(mesh,node)
-candidata = candidatos()
-triangulos = triangulosArefinar(candidata)
-vertices = calculateTriangle(mesh,node,triangulos)
-inicial = Time.now
-crearTriangulo(mesh,node,vertices)
-final=Time.now
-escribirPoly(node,mesh,"final.poly")
-meshoriginal=triangulos()
-triangulosGenerados=(meshoriginal[0][0])-(mesh[0][0])
-tiempo=final-inicial
-puts "tiempo inicial"+inicial.to_s
-puts "tiempo final"+final.to_s
-puts "tiempo de ejecucion"+tiempo.to_s
-puts "numero de triangulos generados"+triangulosGenerados.to_s
+candidata = candidatos() #O(2n+n^2+1) 
+triangulos = triangulosArefinar(candidata) # O(n+1) 
+vertices = calculateTriangle(mesh,node,triangulos) #O(n+1) 
+inicial = Time.now #O(1) 
+crearTriangulo(mesh,node,vertices) #O(n^3+4n^2+5)
+final=Time.now #O(1) 
+escribirPoly(node,mesh,"final.poly") # O(3n+n^2) 
+meshoriginal=triangulos() #O(n+n^2+1) 
+triangulosGenerados=(meshoriginal[0][0])-(mesh[0][0]) #O(3) 
+tiempo=final-inicial #O(2) 
+puts "tiempo inicial"+inicial.to_s #O(1) 
+puts "tiempo final"+final.to_
+puts "tiempo de ejecucion"+tiempo.to_s #O(1) 
+puts "numero de triangulos generados"+triangulosGenerados.to_s #O(1) 
+
+
+#O(3n+3n^2+3)+O(6n+2n^2)+O(11)+O(2n+2) + O(2n+n^2+1)+ O(n^3+4n^2+5)
+
+#O(13n+10n^2+22+n^3) --> O(n^3)
