@@ -45,7 +45,7 @@ def candidatos()
       candidato << linea.chop!
     end
   end
-  for i in 0..candidato.length-1
+  for i in 0..candidato.length-1  
     candidato[i]= candidato[i].split(" ")
     for j in 0..candidato[i].length-1
       candidato[i][j]= candidato[i][j].to_i
@@ -66,7 +66,7 @@ end #complejidad O(1)
 def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
   refinar = 0
-  if(triangulo.alfa <= 18 || triangulo.beta <= 18 || triangulo.gama <= 18) 
+  if(triangulo.alfa <= 39 || triangulo.beta <= 39 || triangulo.gama <= 39) 
     if (triangulo.alfa > 0 || triangulo.beta > 0 || triangulo.gama > 0 )
       refinar = 1
     end
@@ -367,8 +367,8 @@ end #complejidad O(2n+n+n^2)-->O(3n+n^2)
 node = coordenadas() #O(n+n^2+1) 
 mesh = triangulos() # O(n+n^2+1) 
 escribirPoly(node,mesh,"original.poly") # O(3n+n^2) 
-#candidata = listaCantidadArefinar(mesh,node)
-candidata = candidatos() #O(2n+n^2+1) 
+candidata = listaCantidadArefinar(mesh,node) #complejidad O((n+1)^2 + 1)
+#candidata = candidatos() #O(2n+n^2+1) 
 triangulos = triangulosArefinar(candidata) # O(n+1) 
 vertices = calculateTriangle(mesh,node,triangulos) #O(n+1) 
 inicial = Time.now #O(1) 
@@ -379,7 +379,7 @@ meshoriginal=triangulos() #O(n+n^2+1)
 triangulosGenerados=(meshoriginal[0][0])-(mesh[0][0]) #O(3) 
 tiempo=final-inicial #O(2) 
 puts "tiempo inicial"+inicial.to_s #O(1) 
-puts "tiempo final"+final.to_
+puts "tiempo final"+final.to_s
 puts "tiempo de ejecucion"+tiempo.to_s #O(1) 
 puts "numero de triangulos generados"+triangulosGenerados.to_s #O(1) 
 
