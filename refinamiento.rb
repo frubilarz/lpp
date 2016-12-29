@@ -378,10 +378,10 @@ escribirPoly(node,mesh,"final.poly") # O(3n+n^2)
 meshoriginal=triangulos() #O(n+n^2+1) 
 triangulosGenerados=(meshoriginal[0][0])-(mesh[0][0]) #O(3) 
 tiempo=final-inicial #O(2) 
-puts "tiempo inicial"+inicial.to_s #O(1) 
-puts "tiempo final"+final.to_s
-puts "tiempo de ejecucion"+tiempo.to_s #O(1) 
-puts "numero de triangulos generados"+triangulosGenerados.to_s #O(1) 
+puts "tiempo inicial : "+inicial.to_s #O(1) 
+puts "tiempo final : "+final.to_s
+puts "tiempo de ejecucion : "+tiempo.to_s #O(1) 
+puts "numero de triangulos generados : "+triangulosGenerados.to_s #O(1) 
 
 
 #O(3n+3n^2+3)+O(6n+2n^2)+O(11)+O(2n+2) + O(2n+n^2+1)+ O(n^3+4n^2+5)
