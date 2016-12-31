@@ -8,7 +8,6 @@ def coordenadas()
       node << linea.chop! #chop elimina el ultimo caracter en este caso el salto de linea
     end
   end
-
   for i in 0..node.length-1
     node[i]= node[i].split(" ")
     for j in 0..node[i].length-1
@@ -66,7 +65,7 @@ end #complejidad O(1)
 def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
   refinar = 0
-  if(triangulo.alfa <= 41.5 || triangulo.beta <= 41.5 || triangulo.gama <= 41.5) 
+  if(triangulo.alfa <= 43.8 || triangulo.beta <= 43.8 || triangulo.gama <= 43.8) 
     if (triangulo.alfa > 0 || triangulo.beta > 0 || triangulo.gama > 0 )
       refinar = 1
     end
@@ -366,7 +365,7 @@ end #complejidad O(2n+n+n^2)-->O(3n+n^2)
 
 node = coordenadas() #O(n+n^2+1) 
 mesh = triangulos() # O(n+n^2+1) 
-escribirPoly(node,mesh,"original.poly") # O(3n+n^2) 
+#escribirPoly(node,mesh,"original.poly") # O(3n+n^2) 
 candidata = listaCantidadArefinar(mesh,node) #complejidad O((n+1)^2 + 1)
 #candidata = candidatos() #O(2n+n^2+1) 
 triangulos = triangulosArefinar(candidata) # O(n+1) 
