@@ -65,7 +65,7 @@ end #complejidad O(1)
 def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
   refinar = 0
-  if(triangulo.alfa <= 43.8 || triangulo.beta <= 43.8 || triangulo.gama <= 43.8) 
+  if(triangulo.alfa <= 39 || triangulo.beta <= 39 || triangulo.gama <= 39) 
     if (triangulo.alfa > 0 || triangulo.beta > 0 || triangulo.gama > 0 )
       refinar = 1
     end
@@ -89,6 +89,17 @@ def combinaciones(mesh)
   return combinacion
 end # complejidad O(2n)
 
+
+def combinacionesSinRepeticion(mesh)
+  combinacion = combinaciones()
+  for i in 0..combinacion.length-1
+    c = combinacion[i]
+    combinacion.delete(c)
+    combinacion<< c
+  end
+  combinacion.delete(nil)
+  return combinacion
+end
 
 def listaCantidadArefinar()
   mesh = []
@@ -355,8 +366,8 @@ def escribirPoly(node,mesh,nombre)
     for i in 1..combinacion.length-1
       c = combinacion[i]
       for j in 0..c.length-1
-          file.puts aux.to_s+q+c[j][0].to_s+q+c[j][1].to_s+q+c[j][2].to_s  
-          aux =aux+1 
+        file.puts aux.to_s+q+c[j][0].to_s+q+c[j][1].to_s+q+c[j][2].to_s  
+        aux =aux+1 
       end
     end
     file.puts "0"
@@ -375,7 +386,7 @@ crearTriangulo(mesh,node,vertices) #O(n^3+4n^2+5)
 final=Time.now #O(1) 
 escribirPoly(node,mesh,"final.poly") # O(3n+n^2) 
 meshoriginal=triangulos() #O(n+n^2+1) 
-triangulosGenerados=(meshoriginal[0][0])-(mesh[0][0]) #O(3) 
+triangulosGenerados=-(meshoriginal[0][0])+(mesh[0][0]) #O(3) 
 tiempo=final-inicial #O(2) 
 puts "tiempo inicial : "+inicial.to_s #O(1) 
 puts "tiempo final : "+final.to_s
@@ -386,3 +397,24 @@ puts "numero de triangulos generados : "+triangulosGenerados.to_s #O(1)
 #O(3n+3n^2+3)+O(6n+2n^2)+O(11)+O(2n+2) + O(2n+n^2+1)+ O(n^3+4n^2+5)
 
 #O(13n+10n^2+22+n^3) --> O(n^3)
+
+def revisar(mesh,node)
+  combinacion = combinacionesSinRepetir(mesh)
+  contador = 0
+  combinacionUnica = []
+  for i in 0..combinacion.length-1
+    combinacion.detect{ |e| combinacion.count(e) > 1 }
+  end
+
+  for i in 0..node.length-1
+    for j in 0..combinacion.length-1
+      temporal = combinacion[j]
+      for k in 0..temporal.length-1
+        if node[i][0]==temporal[k][0] || node[i][1]==temporal[k][1]
+          contador+=1
+        end
+      end
+    end
+  end 
+  puts contador
+end
