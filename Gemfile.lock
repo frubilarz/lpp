@@ -1,0 +1,12 @@
+GEM
+  specs:
+    geometry (6.5)
+
+PLATFORMS
+  x86-mingw32
+
+DEPENDENCIES
+  geometry
+
+BUNDLED WITH
+   1.13.7
