@@ -44,7 +44,7 @@ def candidatos()
       candidato << linea.chop!
     end
   end
-  for i in 0..candidato.length-1  
+  for i in 0..candidato.length-1
     candidato[i]= candidato[i].split(" ")
     for j in 0..candidato[i].length-1
       candidato[i][j]= candidato[i][j].to_i
@@ -65,7 +65,7 @@ end #complejidad O(1)
 def angulosTriangulos(a,b,c)
   triangulo = Triangulos.new(a,b,c)
   refinar = 0
-  if(triangulo.alfa <= 39 || triangulo.beta <= 39 || triangulo.gama <= 39) 
+  if(triangulo.alfa <= 18 || triangulo.beta <= 18 || triangulo.gama <= 18)
     if (triangulo.alfa > 0 || triangulo.beta > 0 || triangulo.gama > 0 )
       refinar = 1
     end
@@ -185,20 +185,20 @@ def puntoMedio(lado,lista) #calcula el punto medio de una distancia
     puntoMed = [numero,x,y]
     lista<< puntoMed
   else
-    puntoMed = [lista[indice][0],x,y]  
+    puntoMed = [lista[indice][0],x,y]
   end
   return puntoMed
 end #complejidad O(n+1)
 
 
-def calculateTriangle(mesh, node, triangulosArefinar) 
+def calculateTriangle(mesh, node, triangulosArefinar)
   #refinacion del triangulo y calculo de los triangulos nuevos
   nuevo =[]
   for i in 0..triangulosArefinar.length-1
     nuevo<<mesh[triangulosArefinar[i]]
   end
   return nuevo
-end #complejidad O(n) 
+end #complejidad O(n)
 
 def verticeMasLargo(a,b,c)
   if a > b && a > c
@@ -250,8 +250,8 @@ def buscarNodo(matriz,node)
   return s
 end #complejidad O(n+1)
 
-def buscarPunto(node,arreglo) # busca los nodos 
-  nodo = []  
+def buscarPunto(node,arreglo) # busca los nodos
+  nodo = []
   for i in 0..node.length-1
     for j in 0..arreglo.length-1
       if(arreglo[j] == node[i][0]) # compara el numero del nodo para retornar su nodo completo
@@ -285,10 +285,10 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
       end
     end
     mesh<< nuevoTriangulo[1]
-    
+
     igual = iguales(mesh,triangulo,lado)
- 
-    
+
+
     if igual != []
       crearTriangulo(mesh,node,igual)
     end
@@ -314,10 +314,10 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
         end
       end
       mesh<< nuevoTriangulo[1]
-    
+
       igual = iguales(mesh,triangulo,lado)
- 
-      
+
+
       if igual != []
         crearTriangulo(mesh,node,igual)
       end
@@ -325,7 +325,7 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
     mesh[0][0]= mesh.length-1
   end
 end #complejidad O(2n+n((n+1)+(n^2)+(1)+(n+1)+n+n)) --> O(2n+n(n^2+4n+3))--> O(2n+n^3+4n^2+3n)->O(n^3+4n^2+5)
-  
+
 def iguales(mesh,triangulo,lado)
   combinacion = combinaciones(mesh)
   iguales = []
@@ -333,8 +333,8 @@ def iguales(mesh,triangulo,lado)
     for j in 0..combinacion[i].length-1
       if triangulo[lado] == combinacion[i][j] || triangulo[lado].reverse == combinacion[i][j]
         iguales = mesh[i]
-      end 
-    end 
+      end
+    end
   end
   return iguales
 end #complejidad O(2n+n^2)
@@ -366,8 +366,8 @@ def escribirPoly(node,mesh,nombre)
     for i in 1..combinacion.length-1
       c = combinacion[i]
       for j in 0..c.length-1
-        file.puts aux.to_s+q+c[j][0].to_s+q+c[j][1].to_s+q+c[j][2].to_s  
-        aux =aux+1 
+        file.puts aux.to_s+q+c[j][0].to_s+q+c[j][1].to_s+q+c[j][2].to_s
+        aux =aux+1
       end
     end
     file.puts "0"
@@ -378,7 +378,7 @@ end #complejidad O(2n+n+n^2)-->O(3n+n^2)
 def puntoMedioContenido(lado,node) #calcula el punto medio de una distancia
   x = ((lado.first.x + lado.last.x)/2).to_f
   y= ((lado.first.y + lado.last.y)/2).to_f
-  
+
   contador = 0
   for i in 0..node.length-1
     if(node[i][1]==x && node[i][2])
@@ -386,7 +386,7 @@ def puntoMedioContenido(lado,node) #calcula el punto medio de una distancia
     end
   end
   return contador
-end 
+end
 
 
 def revisar(mesh,node)
@@ -400,7 +400,8 @@ def revisar(mesh,node)
       edge = toEdge(punto[0],punto[1])
       contador << puntoMedioContenido(edge,node)
       if contador.reduce(:+)== 1
-         puntoMedio(edge,node)        
+         puntoMedio(edge,node)
+         crearTriangulo(mesh,node,mesh[i])
         break
       end
     end
@@ -410,35 +411,31 @@ def revisar(mesh,node)
   return lista
 end
 
-node = coordenadas() #O(n+n^2+1) 
-mesh = triangulos() # O(n+n^2+1) 
-#escribirPoly(node,mesh,"original.poly") # O(3n+n^2) 
+node = coordenadas() #O(n+n^2+1)
+mesh = triangulos() # O(n+n^2+1)
+#escribirPoly(node,mesh,"original.poly") # O(3n+n^2)
 candidata = listaCantidadArefinar(mesh,node) #complejidad O((n+1)^2 + 1)
-#candidata = candidatos() #O(2n+n^2+1) 
-triangulos = triangulosArefinar(candidata) # O(n+1) 
-vertices = calculateTriangle(mesh,node,triangulos) #O(n+1) 
-escribirPoly(node,mesh,"original.poly") # O(3n+n^2) 
+#candidata = candidatos() #O(2n+n^2+1)
+triangulos = triangulosArefinar(candidata) # O(n+1)
+vertices = calculateTriangle(mesh,node,triangulos) #O(n+1)
+escribirPoly(node,mesh,"original.poly") # O(3n+n^2)
 
-inicial = Time.now #O(1) 
+inicial = Time.now #O(1)
 crearTriangulo(mesh,node,vertices) #O(n^3+4n^2+5)
-final=Time.now #O(1) 
+final=Time.now #O(1)
 
 
 revisar(mesh,node)
-escribirPoly(node,mesh,"final.poly") # O(3n+n^2) 
-meshoriginal=triangulos() #O(n+n^2+1) 
-triangulosGenerados=-(meshoriginal[0][0])+(mesh[0][0]) #O(3) 
-tiempo=final-inicial #O(2) 
-puts "tiempo inicial : "+inicial.to_s #O(1) 
+escribirPoly(node,mesh,"final.poly") # O(3n+n^2)
+meshoriginal=triangulos() #O(n+n^2+1)
+triangulosGenerados=-(meshoriginal[0][0])+(mesh[0][0]) #O(3)
+tiempo=final-inicial #O(2)
+puts "tiempo inicial : "+inicial.to_s #O(1)
 puts "tiempo final : "+final.to_s
-puts "tiempo de ejecucion : "+tiempo.to_s #O(1) 
-puts "numero de triangulos generados : "+triangulosGenerados.to_s #O(1) 
+puts "tiempo de ejecucion : "+tiempo.to_s #O(1)
+puts "numero de triangulos generados : "+triangulosGenerados.to_s #O(1)
 
 
 #O(3n+3n^2+3)+O(6n+2n^2)+O(11)+O(2n+2) + O(2n+n^2+1)+ O(n^3+4n^2+5)
 
 #O(13n+10n^2+22+n^3) --> O(n^3)
-
-
-
-
