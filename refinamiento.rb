@@ -266,7 +266,7 @@ def crearTriangulo(mesh,node,listaDeTriangulosArefinar)
 
   combinacion = combinaciones(listaDeTriangulosArefinar)
   dimension = get_dimension combinacion
-  if dimension ==2
+  if dimension == 2
     triangulo = combinacion
     lado = buscarNodo(triangulo,node)
     punto = buscarPunto(node,triangulo[lado.to_i])
@@ -400,8 +400,8 @@ def revisar(mesh,node)
       edge = toEdge(punto[0],punto[1])
       contador << puntoMedioContenido(edge,node)
       if contador.reduce(:+)== 1
-         puntoMedio(edge,node)
-         crearTriangulo(mesh,node,mesh[i])
+        puntoMedio(edge,node)
+        crearTriangulo(mesh,node,mesh[i])
         break
       end
     end
@@ -425,7 +425,10 @@ crearTriangulo(mesh,node,vertices) #O(n^3+4n^2+5)
 final=Time.now #O(1)
 
 
-revisar(mesh,node)
+lista = revisar(mesh,node)
+while lista.reduce(:+) !=0
+  lista = revisar(mesh,node)
+end
 escribirPoly(node,mesh,"final.poly") # O(3n+n^2)
 meshoriginal=triangulos() #O(n+n^2+1)
 triangulosGenerados=-(meshoriginal[0][0])+(mesh[0][0]) #O(3)
@@ -433,9 +436,37 @@ tiempo=final-inicial #O(2)
 puts "tiempo inicial : "+inicial.to_s #O(1)
 puts "tiempo final : "+final.to_s
 puts "tiempo de ejecucion : "+tiempo.to_s #O(1)
+puts "triangulos total : "+ mesh[0][0].to_s
 puts "numero de triangulos generados : "+triangulosGenerados.to_s #O(1)
+
 
 
 #O(3n+3n^2+3)+O(6n+2n^2)+O(11)+O(2n+2) + O(2n+n^2+1)+ O(n^3+4n^2+5)
 
 #O(13n+10n^2+22+n^3) --> O(n^3)
+def generarEle(mesh)
+  File.open('archivo.ele','w') do |f|
+    f.puts (mesh.length-1).to_s+' 3'
+    for i in 1..mesh.length-1
+      f.puts i.to_s+' '+mesh[i][0].to_s+' '+mesh[i][1].to_s+' '+mesh[i][2].to_s
+    end
+  end
+end
+
+def generarNode(node)
+  File.open('archivo.node.','w') do |f|
+    f.puts (node.length-1).to_s+' 2'
+    for i in 1..node.length-1
+      f.puts i.to_s+' '+node[i][0].to_s+' '+node[i][1].to_s
+    end
+  end
+end
+
+def generarPart(mesh)
+  File.open('archivo.part','w') do |f|
+    f.puts mesh.length.to_s+' 1'
+    for i in 1..mesh.length
+      f.puts i.to_s+' 1'
+    end
+  end
+end
